@@ -118,10 +118,10 @@ public class MaxFlow {
      * Repeats the process in a while until there's no more way to be found
      *
      * @param edges The EdgeList with all the possible Edges to flow through
-     * @throws ImpossibleBottleNeckValue Throws when the Bottleneck value is lower than 0
+     * @throws ImpossibleBottleNeckValueException Throws when the Bottleneck value is lower than 0
      * @throws ImpossibleOrderException  When the sPoint(SourcePoint) is t(TargetPoint)
      */
-    public static void maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValue, ImpossibleOrderException {
+    public static void maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
         ArrayList<Edge> tempEdgeList = new ArrayList<Edge>();
         ArrayList<Edge> newEdgeList;
         boolean finished = false;
@@ -242,15 +242,15 @@ public class MaxFlow {
      * @param curWay The current Way
      * @return Returns the EdgeList which holds the RevEdges
      * @throws ImpossibleOrderException  When the sPoint(SourcePoint) is t(TargetPoint)
-     * @throws ImpossibleBottleNeckValue Throws when the Bottleneck value isn't greater than 0
+     * @throws ImpossibleBottleNeckValueException Throws when the Bottleneck value isn't greater than 0
      */
-    public static ArrayList<Edge> getMaxFlow(ArrayList<Edge> curWay) throws ImpossibleOrderException, ImpossibleBottleNeckValue {
+    public static ArrayList<Edge> getMaxFlow(ArrayList<Edge> curWay) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
         checkPrintWay(curWay);
         int bottleneck = bottleNeckFlow(curWay);
         if (bottleneck > 0) {
             return reduceFlow(bottleneck, curWay);
         } else {
-            throw new ImpossibleBottleNeckValue("The Bottleneck value can't be lower than 0");
+            throw new ImpossibleBottleNeckValueException("The Bottleneck value can't be lower than 0");
         }
     }
 
@@ -375,7 +375,7 @@ public class MaxFlow {
         System.out.println("Maximum flow: " + sRev);
     }
 
-    public static void main(String[] args) throws ImpossibleBottleNeckValue, ImpossibleOrderException {
+    public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
         initData();
         maxFlow(pointToEdges(points));
     }
