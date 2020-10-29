@@ -68,7 +68,7 @@ public class MaxFlow {
          */
 
         //Diagram 2: MaxFlow = 6
-        /*
+
         points.add(s1);
         points.add(a1);
         points.add(b1);
@@ -77,7 +77,7 @@ public class MaxFlow {
         points.add(e1);
         points.add(f1);
         points.add(t1);
-         */
+
 
         //Diagram 3: MaxFlow = 19
         /*
@@ -346,7 +346,7 @@ public class MaxFlow {
      */
     public static void checkPrintEdges(ArrayList<Edge> edges) {
         for (Edge edge : edges) {
-            System.out.println(edge.getValue() + ", Source: " + edge.getsPoint() + ", Target: " + edge.gettPoint());
+            System.out.println(edge.getsPoint() + " -" + edge.getValue() + "-> " + edge.gettPoint());
         }
     }
 
