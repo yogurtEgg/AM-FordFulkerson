@@ -80,6 +80,8 @@ public class inputController extends Application {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
+        anotherCircle(mouseX, mouseY);
+
         if (checkClick(mouseX, mouseY)){
                 gc.strokeOval(mouseX - 10, mouseY - 10, 20, 20);
                 knots.add(new DPoint(mouseX - 10, mouseY - 10, id));
@@ -88,6 +90,21 @@ public class inputController extends Application {
         }
 
 
+    }
+
+    private void anotherCircle(double mouseX, double mouseY){
+        for(int a = 0; a < knots.size(); a++) {
+            DPoint dp = knots.get(a);
+            int checkint = 0;
+            double width = dp.getRadius() * 2;
+
+            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width)) {
+                System.out.println("y is same");
+            }
+            if (mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width)) {
+                System.out.println("x is same");
+            }
+        }
     }
 
     private boolean checkClick(double mouseX, double mouseY) {
@@ -106,18 +123,16 @@ public class inputController extends Application {
 
         for(int a = 0; a < knots.size(); a++) {
             DPoint dp = knots.get(a);
+            double width = dp.getRadius() * 2;
 
-            System.out.println(dp.getId() + "\t<" + (dp.getPosX() + dp.getRadius()) + "\t>" + (dp.getPosX() - dp.getRadius()));
-            System.out.println("x\t" + mouseX);
-            System.out.println(dp.getId() + "\t>" + (dp.getPosY() + dp.getRadius()) + "\t<" + (dp.getPosY() - dp.getRadius()));
-            System.out.println("y\t" + mouseY);
-            if(!(mouseX < (dp.getPosX() + dp.getRadius()) && mouseX > (dp.getPosX() - dp.getRadius()))) {
-                return true;
-            }
-
-
-            if (!(mouseY > dp.getPosY() + (dp.getRadius()) && mouseY < dp.getPosY() - (dp.getRadius()))){
-                return true;
+            //System.out.println(dp.getId() + "\t<" + (dp.getPosX() + dp.getRadius()) + "\t>" + (dp.getPosX() - dp.getRadius()));
+            //System.out.println("x\t" + mouseX);
+            //System.out.println(dp.getId() + "\t>" + (dp.getPosY() + dp.getRadius()) + "\t<" + (dp.getPosY() - dp.getRadius()));
+            //System.out.println("y\t" + mouseY);
+            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width/2)){
+                if(mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width/2)) {
+                   return false;
+                }
             }
         }
 
@@ -125,7 +140,7 @@ public class inputController extends Application {
             truther = false;
         }
 
-        return false;
+        return true;
     }
 
 

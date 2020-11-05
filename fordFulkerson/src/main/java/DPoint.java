@@ -15,7 +15,7 @@ public class DPoint {
         this.posX = posX;
         this.posY = posY;
         this.id = id;
-        radius = 10;
+        radius = 17;
     }
 
     public DPoint(){
