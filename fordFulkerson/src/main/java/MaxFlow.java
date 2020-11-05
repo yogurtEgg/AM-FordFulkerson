@@ -1,3 +1,6 @@
+import exception.ImpossibleBottleNeckValueException;
+import exception.ImpossibleOrderException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,17 +61,17 @@ public class MaxFlow {
      */
     public static void initData() {
         //Diagram 1: MaxFlow = 14
-        /*
+
         points.add(s);
         points.add(a);
         points.add(b);
         points.add(c);
         points.add(d);
         points.add(t);
-         */
 
         //Diagram 2: MaxFlow = 6
 
+        /*
         points.add(s1);
         points.add(a1);
         points.add(b1);
@@ -77,6 +80,7 @@ public class MaxFlow {
         points.add(e1);
         points.add(f1);
         points.add(t1);
+         */
 
 
         //Diagram 3: MaxFlow = 19
