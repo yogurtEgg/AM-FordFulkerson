@@ -372,6 +372,7 @@ public class MaxFlow {
 
     /**
      * Prints out maximum flow
+     * @param maxFlow The maxFlow
      */
     public static void printMaxFlow(int maxFlow) {
         System.out.println("Maximum flow: " + maxFlow);
