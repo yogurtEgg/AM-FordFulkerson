@@ -120,10 +120,10 @@ public class MaxFlow {
 
     /**
      * Repeats the process in a while until there's no more way to be found
-     *
      * @param edges The EdgeList with all the possible Edges to flow through
+     * @return The maxFlow
      * @throws ImpossibleBottleNeckValueException Throws when the Bottleneck value is lower than 0
-     * @throws ImpossibleOrderException  When the sPoint(SourcePoint) is t(TargetPoint)
+     * @throws ImpossibleOrderException When the sPoint(SourcePoint) is t(TargetPoint)
      */
     public static int maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
         ArrayList<Edge> tempEdgeList = new ArrayList<Edge>();
