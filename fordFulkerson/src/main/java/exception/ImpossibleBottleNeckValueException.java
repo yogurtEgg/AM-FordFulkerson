@@ -1,3 +1,5 @@
+package exception;
+
 /**
  * @author Paede
  * @version 25.10.2020
