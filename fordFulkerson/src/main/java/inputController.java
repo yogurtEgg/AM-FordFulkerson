@@ -16,12 +16,9 @@ import java.util.ArrayList;
 
 public class inputController extends Application {
 
-    private GridPane pane;
     private Canvas canvas;
-    private Button startButton;
-    private Button clearButton;
     private GraphicsContext gc;
-    private ArrayList<DPoint> knots;
+    private final ArrayList<DPoint> knots = new ArrayList<>();
     private int id;
 
     public inputController(){
@@ -30,28 +27,28 @@ public class inputController extends Application {
     /**
      *
      * @param primaryStage This is the stage, the primary stage
-     * @throws Exception throws any exception
      */
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Settings");
 
-        pane = new GridPane();
+        GridPane pane = new GridPane();
         canvas = new Canvas(750, 500);
-        startButton = new Button("start");
-        clearButton = new Button("clear");
+        Button startButton = new Button("start");
+        Button clearButton = new Button("clear");
         gc = canvas.getGraphicsContext2D();
 
-        startButton.setOnAction(event -> handleButtonStart(event));
-        clearButton.setOnAction(event -> handleButtonClear(event));
+        startButton.setOnAction(this::handleButtonStart);
+        clearButton.setOnAction(this::handleButtonClear);
 
         pane.add(canvas, 0, 0, 3, 4);
         pane.add(startButton, 3, 0);
         pane.add(clearButton, 3, 1);
 
         Scene scene = new Scene(pane, 500, 300);
-        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> mouseClickAction(e) );
-        canvas.setOnMouseClicked(e -> mouseClickAction(e));
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                this::mouseClickAction);
+        canvas.setOnMouseClicked(this::mouseClickAction);
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -71,7 +68,6 @@ public class inputController extends Application {
 
         id = 0;
 
-        knots = new ArrayList<DPoint>();
         knots.add(new DPoint(30.0, canvas.getHeight() / 2.0, id));
         knots.add(new DPoint(canvas.getWidth() - 55.0, canvas.getHeight() / 2, id));
     }
@@ -93,9 +89,7 @@ public class inputController extends Application {
     }
 
     private void anotherCircle(double mouseX, double mouseY){
-        for(int a = 0; a < knots.size(); a++) {
-            DPoint dp = knots.get(a);
-            int checkint = 0;
+        for (DPoint dp : knots) {
             double width = dp.getRadius() * 2;
 
             if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width)) {
@@ -109,38 +103,31 @@ public class inputController extends Application {
 
     private boolean checkClick(double mouseX, double mouseY) {
 
-        boolean truther = true;
 
         //x-border
         if (mouseX < 75 || mouseX > canvas.getWidth() - 75) {
-            truther = false;
+            return false;
         }
 
         //x-Border
         if (mouseY < 30 || mouseY > canvas.getHeight() - 30) {
-            truther = false;
+            return false;
         }
 
-        for(int a = 0; a < knots.size(); a++) {
-            DPoint dp = knots.get(a);
+        for (DPoint dp : knots) {
             double width = dp.getRadius() * 2;
 
             //System.out.println(dp.getId() + "\t<" + (dp.getPosX() + dp.getRadius()) + "\t>" + (dp.getPosX() - dp.getRadius()));
             //System.out.println("x\t" + mouseX);
             //System.out.println(dp.getId() + "\t>" + (dp.getPosY() + dp.getRadius()) + "\t<" + (dp.getPosY() - dp.getRadius()));
             //System.out.println("y\t" + mouseY);
-            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width/2)){
-                if(mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width/2)) {
-                   return false;
+            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width / 2))
+                if (mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width / 2)) {
+                    return false;
                 }
-            }
         }
 
-        if (knots.size() > 10) {
-            truther = false;
-        }
-
-        return true;
+        return knots.size() <= 10;
     }
 
 
