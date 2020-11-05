@@ -125,16 +125,14 @@ public class MaxFlow {
      * @throws ImpossibleBottleNeckValueException Throws when the Bottleneck value is lower than 0
      * @throws ImpossibleOrderException  When the sPoint(SourcePoint) is t(TargetPoint)
      */
-    public static void maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
+    public static int maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
         ArrayList<Edge> tempEdgeList = new ArrayList<Edge>();
         ArrayList<Edge> newEdgeList;
-        boolean finished = false;
 
-        while (!finished) {
+        while (true) {
             ArrayList<Edge> curWay = deepSearch(edges);
             if (curWay.isEmpty()) {
-                printMaxFlow();
-                finished = true;
+                return sRev;
             } else {
                 tempEdgeList.clear();
                 newEdgeList = getMaxFlow(curWay);
@@ -375,12 +373,12 @@ public class MaxFlow {
     /**
      * Prints out maximum flow
      */
-    public static void printMaxFlow() {
-        System.out.println("Maximum flow: " + sRev);
+    public static void printMaxFlow(int maxFlow) {
+        System.out.println("Maximum flow: " + maxFlow);
     }
 
     public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
         initData();
-        maxFlow(pointToEdges(points));
+        printMaxFlow(maxFlow(pointToEdges(points)));
     }
 }
