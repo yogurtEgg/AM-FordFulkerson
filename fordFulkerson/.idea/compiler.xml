@@ -9,8 +9,11 @@
         <module name="fordFulkerson" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="fordFulkerson" target="1.5" />
+    <bytecodeTargetLevel target="8">
+      <module name="fordFulkerson" target="8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="PREFER_TARGET_JDK_COMPILER" value="false" />
   </component>
 </project>

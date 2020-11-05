@@ -5,27 +5,21 @@ import java.util.ArrayList;
  * @version 03.10.2020
  */
 public class DPoint {
-
-    private char name;
+    private int id;
+    private double posX;
+    private double posY;
+    private double radius;
     private ArrayList<String> connections;
 
-    public DPoint(char name, ArrayList<String> connections) {
-        this.name = name;
-        this.connections = connections;
+    public DPoint(double posX, double posY, int id) {
+        this.posX = posX;
+        this.posY = posY;
+        this.id = id;
+        radius = 10;
     }
 
-    public DPoint(char name){
-        this.name = name;
-    }
+    public DPoint(){
 
-    public DPoint(){}
-
-    public char getName() {
-        return name;
-    }
-
-    public void setName(char name) {
-        this.name = name;
     }
 
     public ArrayList<String> getConnections() {
@@ -38,5 +32,37 @@ public class DPoint {
 
     public void addConnection(String connection){
         this.connections.add(connection);
+    }
+
+    public double getPosX() {
+        return posX;
+    }
+
+    public void setPosX(double posX) {
+        this.posX = posX;
+    }
+
+    public double getPosY() {
+        return posY;
+    }
+
+    public void setPosY(double posY) {
+        this.posY = posY;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
