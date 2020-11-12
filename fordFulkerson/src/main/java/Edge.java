@@ -8,8 +8,14 @@ public class Edge {
     private String name;
     private char sPoint;
     private char tPoint;
+    private DPoint startPoint;
+    private DPoint endPoint;
 
     public Edge() {
+    }
+
+    public Edge(DPoint startPoint) {
+        this.startPoint = startPoint;
     }
 
     public Edge(int value, char sPoint, char tPoint) {
@@ -17,6 +23,26 @@ public class Edge {
         this.sPoint = sPoint;
         this.tPoint = tPoint;
         this.name = Character.toString(sPoint)+Character.toString(tPoint);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DPoint getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(DPoint startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public DPoint getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(DPoint endPoint) {
+        this.endPoint = endPoint;
     }
 
     public int getValue(){

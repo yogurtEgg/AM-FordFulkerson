@@ -16,15 +16,23 @@ import java.util.ArrayList;
 
 public class inputController extends Application {
 
-    private Canvas canvas;
-    private GraphicsContext gc;
+    private Canvas knotCanvas;
+    private GraphicsContext knotGc;
+    private Canvas lineCanvas;
+    private GraphicsContext lineGc;
     private final ArrayList<DPoint> knots = new ArrayList<>();
+    private final ArrayList<Edge> edges = new ArrayList<>();
     private int id;
+    private boolean dragging = false;
+    boolean currentPointIsCircle = false;
+    private DPoint currentPoint;
 
-    public inputController(){
+
+    public inputController() {
     }
 
     /**
+     * Creates the FXML GUI
      *
      * @param primaryStage This is the stage, the primary stage
      */
@@ -33,22 +41,34 @@ public class inputController extends Application {
         primaryStage.setTitle("Settings");
 
         GridPane pane = new GridPane();
-        canvas = new Canvas(750, 500);
+        lineCanvas = new Canvas(750, 500);
+        knotCanvas = new Canvas(750, 500);
         Button startButton = new Button("start");
         Button clearButton = new Button("clear");
-        gc = canvas.getGraphicsContext2D();
+        lineGc = lineCanvas.getGraphicsContext2D();
+        knotGc = knotCanvas.getGraphicsContext2D();
 
         startButton.setOnAction(this::handleButtonStart);
         clearButton.setOnAction(this::handleButtonClear);
 
-        pane.add(canvas, 0, 0, 3, 4);
+        pane.add(lineCanvas, 0, 0, 3, 4);
+        pane.add(knotCanvas, 0, 0, 3, 4);
         pane.add(startButton, 3, 0);
         pane.add(clearButton, 3, 1);
 
         Scene scene = new Scene(pane, 500, 300);
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED,
                 this::mouseClickAction);
-        canvas.setOnMouseClicked(this::mouseClickAction);
+        scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::mouseClickAction);
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED,
+                this::mouseClickAction);
+        scene.addEventFilter(MouseEvent.MOUSE_RELEASED,
+                this::mouseClickAction);
+
+        knotCanvas.setOnMouseClicked(this::mouseClickAction);
+        knotCanvas.setOnMousePressed(this::mousePressAction);
+        knotCanvas.setOnMouseDragged(this::mouseDragAction);
+        knotCanvas.setOnMouseReleased(this::mouseReleaseAction);
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -57,74 +77,128 @@ public class inputController extends Application {
     }
 
     /**
-     *
+     * StartUp
      */
     private void startUp() {
-        gc.setFill(Color.PAPAYAWHIP);
-        gc.fillRect(0,0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.DARKGREEN);
-        gc.fillOval(30, canvas.getHeight() / 2, 25, 25);
-        gc.fillOval(canvas.getWidth() - 55, canvas.getHeight() / 2, 25, 25);
+        knots.clear();
+        lineGc.setFill(Color.PAPAYAWHIP);
+        lineGc.fillRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
+        knotGc.setFill(Color.DARKGREEN);
+        knotGc.fillOval(30, knotCanvas.getHeight() / 2, 25, 25);
+        knotGc.fillOval(knotCanvas.getWidth() - 55, knotCanvas.getHeight() / 2, 25, 25);
 
         id = 0;
 
-        knots.add(new DPoint(30.0, canvas.getHeight() / 2.0, id));
-        knots.add(new DPoint(canvas.getWidth() - 55.0, canvas.getHeight() / 2, id));
+        knots.add(new DPoint(30.0, knotCanvas.getHeight() / 2.0, id));
+        knots.add(new DPoint(knotCanvas.getWidth() - 55.0, knotCanvas.getHeight() / 2, id));
     }
+
+
+    /**
+     * If the mouse is realeased
+     *
+     * @param mouseEvent Detects the mouse
+     */
+    private void mouseReleaseAction(MouseEvent mouseEvent) {
+        double mouseX = mouseEvent.getX();
+        double mouseY = mouseEvent.getY();
+
+        DPoint endPoint = isThereCircle(mouseX, mouseY);
+
+        System.out.println("Mouse Released");
+        if (dragging && !(endPoint == null)) {
+            lineGc.strokeLine(currentPoint.getPosX()+10, currentPoint.getPosY()+10, endPoint.getPosX()+10, endPoint.getPosY()+10);
+        }
+
+        currentPointIsCircle = false;
+        dragging = false;
+    }
+
+
+    /**
+     * if the mouse is pressed
+     *
+     * @param mouseEvent Detects the mouse
+     */
+    private void mouseDragAction(MouseEvent mouseEvent) {
+        System.out.println("Mouse Dragged");
+
+            if(currentPointIsCircle) {
+                dragging = true;
+            }
+        }
+
+
+    /**
+     * If the mouse is pressed
+     *
+     * @param mouseEvent Detects the mouse
+     */
+    private void mousePressAction(MouseEvent mouseEvent) {
+        double mouseX = mouseEvent.getX();
+        double mouseY = mouseEvent.getY();
+
+        System.out.println("Mouse Pressed");
+
+        if (isThereCircle(mouseX, mouseY) != null) {
+            currentPoint = isThereCircle(mouseX, mouseY);
+            currentPointIsCircle = true;
+        }
+
+
+    }
+
+    /**
+     * Start up
+     */
 
     public void mouseClickAction(MouseEvent mouseEvent) {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
-        anotherCircle(mouseX, mouseY);
+        System.out.println("Mouse Clicked");
 
-        if (checkClick(mouseX, mouseY)){
-                gc.strokeOval(mouseX - 10, mouseY - 10, 20, 20);
-                knots.add(new DPoint(mouseX - 10, mouseY - 10, id));
-                System.out.println(mouseX + "\t" + mouseY);
+        if (checkClick(mouseX, mouseY) && !dragging) {
+            knotGc.setFill(Color.WHITE);
+            knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
+            knots.add(new DPoint(mouseX - 10, mouseY - 10, id));
+            System.out.println(mouseX + "\t" + mouseY);
             id += 1;
         }
 
-
-    }
-
-    private void anotherCircle(double mouseX, double mouseY){
-        for (DPoint dp : knots) {
-            double width = dp.getRadius() * 2;
-
-            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width)) {
-                System.out.println("y is same");
-            }
-            if (mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width)) {
-                System.out.println("x is same");
+        if (isThereCircle(mouseX, mouseY) != null) {
+            for (DPoint dp : knots) {
+                if (dp.getPosX() == mouseX && dp.getPosY() == mouseY) {
+                    currentPoint = dp;
+                }
             }
         }
     }
 
+    private DPoint isThereCircle(double mouseX, double mouseY) {
+        for (DPoint dp : knots) {
+            double width = dp.getRadius() * 2;
+            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width / 2))
+                if (mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width / 2)) {
+                    return dp;
+                }
+        }
+        return null;
+    }
+
     private boolean checkClick(double mouseX, double mouseY) {
-
-
         //x-border
-        if (mouseX < 75 || mouseX > canvas.getWidth() - 75) {
+        if (mouseX < 75 || mouseX > knotCanvas.getWidth() - 75) {
             return false;
         }
 
         //x-Border
-        if (mouseY < 30 || mouseY > canvas.getHeight() - 30) {
+        if (mouseY < 30 || mouseY > knotCanvas.getHeight() - 30) {
             return false;
         }
 
-        for (DPoint dp : knots) {
-            double width = dp.getRadius() * 2;
-
-            //System.out.println(dp.getId() + "\t<" + (dp.getPosX() + dp.getRadius()) + "\t>" + (dp.getPosX() - dp.getRadius()));
-            //System.out.println("x\t" + mouseX);
-            //System.out.println(dp.getId() + "\t>" + (dp.getPosY() + dp.getRadius()) + "\t<" + (dp.getPosY() - dp.getRadius()));
-            //System.out.println("y\t" + mouseY);
-            if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width / 2))
-                if (mouseX < (dp.getPosX() + width) && mouseX > (dp.getPosX() - width / 2)) {
-                    return false;
-                }
+        if (isThereCircle(mouseX, mouseY) != null) {
+            return false;
         }
 
         return knots.size() <= 10;
