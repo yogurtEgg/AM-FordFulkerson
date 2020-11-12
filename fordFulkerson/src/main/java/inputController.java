@@ -108,6 +108,43 @@ public class inputController extends Application {
         System.out.println("Mouse Released");
         if (dragging && !(endPoint == null)) {
             lineGc.strokeLine(currentPoint.getPosX()+10, currentPoint.getPosY()+10, endPoint.getPosX()+10, endPoint.getPosY()+10);
+
+            //arow part
+            double ex = endPoint.getPosX();
+            double ey = getEndY();
+            double sx = getStartX();
+            double sy = getStartY();
+
+            arrow1.setEndX(ex);
+            arrow1.setEndY(ey);
+            arrow2.setEndX(ex);
+            arrow2.setEndY(ey);
+
+            if (ex == sx && ey == sy) {
+                // arrow parts of length 0
+                arrow1.setStartX(ex);
+                arrow1.setStartY(ey);
+                arrow2.setStartX(ex);
+                arrow2.setStartY(ey);
+            } else {
+                double factor = 20 / Math.hypot(sx-ex, sy-ey);
+                double factorO = 7 / Math.hypot(sx-ex, sy-ey);
+
+                // part in direction of main line
+                double dx = (sx - ex) * factor;
+                double dy = (sy - ey) * factor;
+
+                // part ortogonal to main line
+                double ox = (sx - ex) * factorO;
+                double oy = (sy - ey) * factorO;
+
+                arrow1.setStartX(ex + dx - oy);
+                arrow1.setStartY(ey + dy + ox);
+                arrow2.setStartX(ex + dx + oy);
+                arrow2.setStartY(ey + dy - ox);
+            }
+
+            edges.add(new Edge(currentPoint, endPoint));
         }
 
         currentPointIsCircle = false;
