@@ -10,6 +10,7 @@ public class Edge {
     private char tPoint;
     private DPoint startPoint;
     private DPoint endPoint;
+    private int capacity;
 
     public Edge(int value, char sPoint, char tPoint) {
         this.value = value;
@@ -18,9 +19,10 @@ public class Edge {
         this.name = Character.toString(sPoint) + Character.toString(tPoint);
     }
 
-    public Edge(DPoint currentPoint, DPoint endPoint) {
+    public Edge(DPoint currentPoint, DPoint endPoint, int capacity) {
         this.endPoint = endPoint;
         this.startPoint = startPoint;
+        this.capacity = capacity;
     }
 
     public void setName(String name) {
