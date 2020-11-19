@@ -12,44 +12,10 @@ import java.util.List;
  */
 
 public class MaxFlow {
-
     /**
      * Creates Arraylist for all the points in the diagram
      */
     public static ArrayList<DPoint> points = new ArrayList<DPoint>();
-
-    /**
-     * Diagram 1
-     * Initialises all Points with their connections (don't need t point)
-     */
-    public static DPoint s = new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10")));
-    public static DPoint a = new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5")));
-    public static DPoint b = new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4")));
-    public static DPoint c = new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5")));
-    public static DPoint d = new DPoint('d', new ArrayList<String>(Collections.singletonList("t12")));
-    public static DPoint t = new DPoint('t');
-
-    /**
-     * Diagram 2
-     */
-    public static DPoint s1 = new DPoint('s', new ArrayList<String>(Arrays.asList("b3", "a10")));
-    public static DPoint a1 = new DPoint('a', new ArrayList<String>(Collections.singletonList("d9")));
-    public static DPoint b1 = new DPoint('b', new ArrayList<String>(Arrays.asList("e4", "c2")));
-    public static DPoint c1 = new DPoint('c', new ArrayList<String>(Collections.singletonList("f5")));
-    public static DPoint d1 = new DPoint('d', new ArrayList<String>(Collections.singletonList("e8")));
-    public static DPoint e1 = new DPoint('e', new ArrayList<String>(Arrays.asList("a3", "t3", "c1")));
-    public static DPoint f1 = new DPoint('f', new ArrayList<String>(Collections.singletonList("t8")));
-    public static DPoint t1 = new DPoint('t');
-
-    /**
-     * Diagram 3
-     */
-    public static DPoint s2 = new DPoint('s', new ArrayList<String>(Arrays.asList("a10", "c10")));
-    public static DPoint a2 = new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d8")));
-    public static DPoint b2 = new DPoint('b', new ArrayList<String>(Collections.singletonList("t10")));
-    public static DPoint c2 = new DPoint('c', new ArrayList<String>(Collections.singletonList("d9")));
-    public static DPoint d2 = new DPoint('d', new ArrayList<String>(Arrays.asList("b6", "t10")));
-    public static DPoint t2 = new DPoint('t');
 
     /**
      * Initialises the Reverse Value of the Connection between S -> A
@@ -61,38 +27,12 @@ public class MaxFlow {
      */
     public static void initData() {
         //Diagram 1: MaxFlow = 14
-
-        points.add(s);
-        points.add(a);
-        points.add(b);
-        points.add(c);
-        points.add(d);
-        points.add(t);
-
-        //Diagram 2: MaxFlow = 6
-
-        /*
-        points.add(s1);
-        points.add(a1);
-        points.add(b1);
-        points.add(c1);
-        points.add(d1);
-        points.add(e1);
-        points.add(f1);
-        points.add(t1);
-         */
-
-
-        //Diagram 3: MaxFlow = 19
-        /*
-        points.add(s2);
-        points.add(a2);
-        points.add(b2);
-        points.add(c2);
-        points.add(d2);
-        points.add(t2);
-         */
-
+        points.add(new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10"))));
+        points.add(new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5"))));
+        points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
+        points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
+        points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
+        points.add(new DPoint('t'));
     }
 
     /**
