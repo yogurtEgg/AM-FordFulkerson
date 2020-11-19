@@ -70,12 +70,14 @@ public class inputController extends Application {
         Scene scene = new Scene(pane, 800, 500);
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED,
                 this::mouseClickAction);
-        scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::mouseClickAction);
+        scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::mouseDragAction);
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, this::mousePressAction);
         scene.addEventFilter(MouseEvent.MOUSE_RELEASED,
-                this::mouseClickAction);
+                this::mouseReleaseAction);
 
         knotCanvas.setOnMouseClicked(this::mouseClickAction);
         knotCanvas.setOnMouseDragged(this::mouseDragAction);
+        knotCanvas.setOnMousePressed(this::mousePressAction);
         knotCanvas.setOnMouseReleased(this::mouseReleaseAction);
 
         primaryStage.setScene(scene);
@@ -95,6 +97,7 @@ public class inputController extends Application {
 
         knots.add(source);
         knots.add(target);
+        currentPoint = source;
     }
 
 
@@ -204,12 +207,30 @@ public class inputController extends Application {
                 if (result.isPresent()){
                     System.out.println("Your choice: " + result.get());
                     choice = Integer.parseInt(result.get());
+
+                    double textXPos = currentPoint.getPosX() + endPoint.getPosX();
+                    textXPos = textXPos / 2;
+                    double textYPos = currentPoint.getPosY() + endPoint.getPosY();
+                    textYPos = textYPos / 2;
+
+
+                    //TODO place the text better -> always visible
+                    knotGc.setFill(Color.BLACK);
+                    knotGc.fillText(result.get(), textXPos, textYPos);
+                    lineGc.setFill(Color.DARKBLUE);
+                    lineGc.strokeLine(currentPoint.getPosX() + 10, currentPoint.getPosY() + 10, endPoint.getPosX() + 10, endPoint.getPosY() + 10);
+                    lineGc.strokeLine(arrow1.getStartX(), arrow1.getStartY(), arrow1.getEndX(), arrow1.getEndY());
+                    lineGc.strokeLine(arrow2.getStartX(), arrow2.getStartY(), arrow2.getEndX(), arrow2.getEndY());
+
+                    System.out.print("Pfeil gezeichnet");
+
+                    edges.add(new Edge(currentPoint, endPoint, choice));
+                } else {
+                    wrongArrow.setContentText("You have to enter a number value to draw an arrow!");
+                    wrongArrow.showAndWait();
                 }
 
-                lineGc.strokeLine(currentPoint.getPosX() + 10, currentPoint.getPosY() + 10, endPoint.getPosX() + 10, endPoint.getPosY() + 10);
-                lineGc.strokeLine(arrow1.getStartX(), arrow1.getStartY(), arrow1.getEndX(), arrow1.getEndY());
-                lineGc.strokeLine(arrow2.getStartX(), arrow2.getStartY(), arrow2.getEndX(), arrow2.getEndY());
-                edges.add(new Edge(currentPoint, endPoint, choice));
+
 
             }
         }
@@ -233,6 +254,23 @@ public class inputController extends Application {
     }
 
     /**
+     * If the mouse is pressed
+     *
+     * @param mouseEvent Detects the mouse
+     */
+    private void mousePressAction(MouseEvent mouseEvent) {
+        double mouseX = mouseEvent.getX();
+        double mouseY = mouseEvent.getY();
+
+        System.out.println("Mouse Pressed");
+
+        if (isThereCircle(mouseX, mouseY) != null) {
+            currentPoint = isThereCircle(mouseX, mouseY);
+            currentPointIsCircle = true;
+        }
+    }
+
+    /**
      * If the mouse is clicked
      *
      * @param mouseEvent Detects the mouse
@@ -247,7 +285,8 @@ public class inputController extends Application {
         if (checkClick(mouseX, mouseY) && !dragging) {
             knotGc.setFill(Color.WHITE);
             knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
-            knots.add(new DPoint(mouseX - 10, mouseY - 10, id));
+            currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
+            knots.add(currentPoint);
             System.out.println(mouseX + "\t" + mouseY);
             id += 1;
         }
@@ -259,7 +298,6 @@ public class inputController extends Application {
                     currentPoint = dp;
                 }
             }
-            currentPointIsCircle = true;
         }
     }
 
