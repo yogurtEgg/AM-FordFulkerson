@@ -283,7 +283,8 @@ public class inputController extends Application {
 
         //checks if the current location is good for drawing a circle
         if (checkClick(mouseX, mouseY) && !dragging) {
-            knotGc.setFill(Color.WHITE);
+
+            knotGc.setFill(Color.DARKBLUE);
             knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
             currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
             knots.add(currentPoint);
