@@ -86,14 +86,17 @@ public class inputController extends Application {
         startUp();
     }
 
+    /**
+     * Cleares Canvas
+     */
     private void clearCanvas(){
         knots.clear();
 
         lineGc.clearRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
         knotGc.clearRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
         knotGc.setFill(Color.DARKGREEN);
-        knotGc.fillOval(30, knotCanvas.getHeight() / 2, 25, 25);
-        knotGc.fillOval(knotCanvas.getWidth() - 55, knotCanvas.getHeight() / 2, 25, 25);
+        knotGc.fillOval(30, knotCanvas.getHeight() / 2 - 10, 20, 20);
+        knotGc.fillOval(knotCanvas.getWidth() - 55, knotCanvas.getHeight() / 2 - 10, 20, 20);
 
         knots.add(source);
         knots.add(target);
@@ -126,9 +129,9 @@ public class inputController extends Application {
         dialog.setContentText("Choose the capacity of your line");
 
         id = 0;
-        source = new DPoint(30.0, knotCanvas.getHeight() / 2.0, id);
+        source = new DPoint(40.0, knotCanvas.getHeight() / 2.0, id);
         id++;
-        target = new DPoint(knotCanvas.getWidth() - 55.0, knotCanvas.getHeight() / 2, id);
+        target = new DPoint(knotCanvas.getWidth() - 40.0, knotCanvas.getHeight() / 2, id);
 
         clearCanvas();
     }
@@ -149,10 +152,26 @@ public class inputController extends Application {
         if (dragging && !(endPoint == null)) {
 
             //arow part
-            double ex = endPoint.getPosX() + 10;
-            double ey = endPoint.getPosY() + 10;
-            double sx = currentPoint.getPosX() + 10;
-            double sy = currentPoint.getPosY() + 10;
+            double ex = endPoint.getPosX();
+            double ey = endPoint.getPosY();
+            double sx = currentPoint.getPosX();
+            double sy = currentPoint.getPosY();
+
+            double kx = sx-ex;
+            double ky = sy-ey;
+            double winkel = Math.atan(kx/ky);
+            double vx = Math.sin(winkel)*10;
+            double vy = Math.cos(winkel)*10;
+
+            System.out.println("Winkel: " + winkel);
+
+            if(ky < 0) {
+                ex -= vx;
+                ey -= vy;
+            } else {
+                ex += vx;
+                ey += vy;
+            }
 
             Line arrow1 = new Line();
             Line arrow2 = new Line();
@@ -189,13 +208,13 @@ public class inputController extends Application {
 
 
             //checks if the arrow points at the source point
-            if(currentPoint.getPosX() == target.getPosX() && currentPoint.getPosY() == target.getPosY()){
+            if(currentPoint.getId() == target.getId()){
                 System.out.println("ERROR: arrow from target point");
 
                 wrongArrow.setContentText("You cannot draw an arrow from the target point!");
                 wrongArrow.showAndWait();
             //Checks if the arrow starts at the target point
-            } else if (endPoint.getPosX() == source.getPosX() && endPoint.getPosY() == source.getPosY()) {
+            } else if (endPoint.getId() == source.getId()) {
                 System.out.println("ERROR: arrow to source point");
 
                 wrongArrow.setContentText("You cannot point an arrow at the source point!");
@@ -218,7 +237,7 @@ public class inputController extends Application {
                     knotGc.setFill(Color.BLACK);
                     knotGc.fillText(result.get(), textXPos, textYPos);
                     lineGc.setFill(Color.DARKBLUE);
-                    lineGc.strokeLine(currentPoint.getPosX() + 10, currentPoint.getPosY() + 10, endPoint.getPosX() + 10, endPoint.getPosY() + 10);
+                    lineGc.strokeLine(currentPoint.getPosX(), currentPoint.getPosY(), endPoint.getPosX(), endPoint.getPosY());
                     lineGc.strokeLine(arrow1.getStartX(), arrow1.getStartY(), arrow1.getEndX(), arrow1.getEndY());
                     lineGc.strokeLine(arrow2.getStartX(), arrow2.getStartY(), arrow2.getEndX(), arrow2.getEndY());
 
@@ -283,9 +302,9 @@ public class inputController extends Application {
 
         //checks if the current location is good for drawing a circle
         if (checkClick(mouseX, mouseY) && !dragging) {
-            knotGc.setFill(Color.WHITE);
+            knotGc.setFill(Color.BLUE);
             knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
-            currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
+            currentPoint = new DPoint(mouseX, mouseY, id);
             knots.add(currentPoint);
             System.out.println(mouseX + "\t" + mouseY);
             id += 1;
@@ -345,9 +364,14 @@ public class inputController extends Application {
         return knots.size() <= 10;
     }
 
-
+    /**
+     * Handles the start Button
+     * @param event EventHandler
+     */
     public void handleButtonStart(ActionEvent event) {
-        System.out.println("Person Button pressed");
+        System.out.println("Start Button pressed");
+
+
         //src: https://stackoverflow.com/questions/27160951/javafx-open-another-fxml-in-the-another-window-with-button
         Parent root;
         try {
