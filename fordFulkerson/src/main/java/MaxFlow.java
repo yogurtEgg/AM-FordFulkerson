@@ -20,20 +20,28 @@ public class MaxFlow {
      */
     public static int sRev = 0;
 
+    public static void start(ArrayList<Edge> givenEdges) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
+        edges.addAll(givenEdges);
+        checkPrintEdges(edges);
+        printMaxFlow(maxFlow(edges));
+    }
+
     /**
      * Adds all the points to the ArrayList points
      */
+    /*
     public static void initData(ArrayList<Edge> givenEdges) {
         edges.addAll(givenEdges);
 
         //Diagram 1: MaxFlow = 14
-//        points.add(new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10"))));
-//        points.add(new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5"))));
-//        points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
-//        points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
-//        points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
-//        points.add(new DPoint('t'));
+        points.add(new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10"))));
+        points.add(new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5"))));
+        points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
+        points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
+        points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
+        points.add(new DPoint('t'));
     }
+     */
 
     /**
      * Initializes all the Edges from the Information given in the Points Objects
@@ -288,7 +296,7 @@ public class MaxFlow {
      */
     public static void checkPrintEdges(ArrayList<Edge> edges) {
         for (Edge edge : edges) {
-            System.out.println(edge.getsPoint() + " -" + edge.getValue() + "-> " + edge.gettPoint());
+            System.out.println(edge.getStartPoint().getId() + " -" + edge.getValue() + "-> " + edge.getEndPoint().getId());
         }
     }
 
@@ -318,8 +326,8 @@ public class MaxFlow {
         System.out.println("Maximum flow: " + maxFlow);
     }
 
-    public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
-        initData();
-        printMaxFlow(maxFlow(pointToEdges(points)));
-    }
+//    public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
+//        initData();
+//        printMaxFlow(maxFlow(pointToEdges(points)));
+//    }y
 }

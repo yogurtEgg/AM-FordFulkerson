@@ -123,7 +123,7 @@ public class inputController extends Application {
         dialog = new ChoiceDialog<>("1", choices);
         dialog.setTitle("");
         dialog.setHeaderText("");
-        dialog.setContentText("Choose the capacity of your line");
+        dialog.setContentText("Choose the value of your line");
 
         id = 0;
         source = new DPoint(30.0, knotCanvas.getHeight() / 2.0, id);
@@ -205,8 +205,11 @@ public class inputController extends Application {
                 int choice = 0;
                 Optional<String> result = dialog.showAndWait();
                 if (result.isPresent()){
-                    System.out.println("Your choice: " + result.get());
                     choice = Integer.parseInt(result.get());
+                    System.out.println("Your choice: " + choice);
+
+
+                    System.out.println(choice);
 
                     double textXPos = currentPoint.getPosX() + endPoint.getPosX();
                     textXPos = textXPos / 2;
@@ -346,9 +349,25 @@ public class inputController extends Application {
         return knots.size() <= 10;
     }
 
-
-    public void handleButtonStart(ActionEvent event) {
+    /**
+     *
+     * @param event
+     * @throws ImpossibleOrderException
+     * @throws ImpossibleBottleNeckValueException
+     */
+    public void handleButtonStart(ActionEvent event){
         System.out.println("Person Button pressed");
+
+        MaxFlow.checkPrintEdges(edges);
+
+        try {
+            MaxFlow.start(edges);
+        } catch (ImpossibleBottleNeckValueException e) {
+            System.out.println(e.getMessage());
+        } catch (ImpossibleOrderException m){
+            System.out.println(m.getMessage());
+        }
+
         //src: https://stackoverflow.com/questions/27160951/javafx-open-another-fxml-in-the-another-window-with-button
         Parent root;
         try {
