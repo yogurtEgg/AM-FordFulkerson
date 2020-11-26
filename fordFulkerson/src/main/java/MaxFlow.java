@@ -41,22 +41,22 @@ public class MaxFlow {
      * @param points Arraylist of the Points in the Diagram
      * @return Returns all the Edges in a EdgeList
      */
-    public static ArrayList<Edge> pointToEdges(ArrayList<DPoint> points) {
-        ArrayList<Edge> edges = new ArrayList<Edge>();
-        for (DPoint dpoint : points) {
-            if (dpoint.getConnections() != null) {
-                for (String connection : dpoint.getConnections()) {
-                    if (isInteger(connection.substring(1))) {
-                        Edge edge = new Edge(Integer.parseInt(connection.substring(1)), dpoint.getName(), connection.charAt(0));
-                        edges.add(edge);
-                    }
-                }
-            }
-
-        }
-        checkPrintEdges(edges);
-        return edges;
-    }
+//    public static ArrayList<Edge> pointToEdges(ArrayList<DPoint> points) {
+//        ArrayList<Edge> edges = new ArrayList<Edge>();
+//        for (DPoint dpoint : points) {
+//            if (dpoint.getConnections() != null) {
+//                for (String connection : dpoint.getConnections()) {
+//                    if (isInteger(connection.substring(1))) {
+//                        Edge edge = new Edge(Integer.parseInt(connection.substring(1)), dpoint.getName(), connection.charAt(0));
+//                        edges.add(edge);
+//                    }
+//                }
+//            }
+//
+//        }
+//        checkPrintEdges(edges);
+//        return edges;
+//    }
 
     /**
      * Repeats the process in a while until there's no more way to be found
