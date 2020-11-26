@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class inputController extends Application {
+public class InputController extends Application {
 
     private Canvas knotCanvas;
     private GraphicsContext knotGc;
@@ -38,7 +38,7 @@ public class inputController extends Application {
     private DPoint target;
 
 
-    public inputController() {
+    public InputController() {
     }
 
     /**
@@ -358,10 +358,8 @@ public class inputController extends Application {
     public void handleButtonStart(ActionEvent event){
         System.out.println("Person Button pressed");
 
-        MaxFlow.checkPrintEdges(edges);
-
         try {
-            MaxFlow.start(edges);
+            MaxFlow mf = new MaxFlow(this);
         } catch (ImpossibleBottleNeckValueException e) {
             System.out.println(e.getMessage());
         } catch (ImpossibleOrderException m){
@@ -384,6 +382,10 @@ public class inputController extends Application {
 
     public void handleButtonClear(ActionEvent actionEvent) {
         startUp();
+    }
+
+    public ArrayList<Edge> getEdges(){
+        return edges;
     }
 
     public static void main(String[] args) {

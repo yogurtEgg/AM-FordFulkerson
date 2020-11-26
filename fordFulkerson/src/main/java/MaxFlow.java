@@ -19,9 +19,16 @@ public class MaxFlow {
      * Initialises the Reverse Value of the Connection between S -> A
      */
     public static int sRev = 0;
+    private InputController controller;
 
-    public static void start(ArrayList<Edge> givenEdges) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
-        edges.addAll(givenEdges);
+
+    public MaxFlow(InputController controller) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
+        edges.addAll(controller.getEdges());
+        this.controller = controller;
+    }
+
+    public void start() throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
+
         checkPrintEdges(edges);
         printMaxFlow(maxFlow(edges));
     }
