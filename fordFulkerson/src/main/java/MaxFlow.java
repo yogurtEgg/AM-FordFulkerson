@@ -1,5 +1,3 @@
-import exception.ImpossibleBottleNeckValueException;
-import exception.ImpossibleOrderException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +13,7 @@ public class MaxFlow {
     /**
      * Creates Arraylist for all the points in the diagram
      */
-    public static ArrayList<DPoint> points = new ArrayList<DPoint>();
+    public static ArrayList<Edge> edges = new ArrayList<>();
 
     /**
      * Initialises the Reverse Value of the Connection between S -> A
@@ -25,14 +23,16 @@ public class MaxFlow {
     /**
      * Adds all the points to the ArrayList points
      */
-    public static void initData() {
+    public static void initData(ArrayList<Edge> givenEdges) {
+        edges.addAll(givenEdges);
+
         //Diagram 1: MaxFlow = 14
-        points.add(new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10"))));
-        points.add(new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5"))));
-        points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
-        points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
-        points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
-        points.add(new DPoint('t'));
+//        points.add(new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10"))));
+//        points.add(new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5"))));
+//        points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
+//        points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
+//        points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
+//        points.add(new DPoint('t'));
     }
 
     /**
