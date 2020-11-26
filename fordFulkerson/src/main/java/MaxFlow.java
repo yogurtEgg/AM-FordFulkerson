@@ -32,17 +32,18 @@ public class MaxFlow {
         points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
         points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
         points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
-        points.add(new DPoint('t'));
     }
 
     /**
      * Initializes all the Edges from the Information given in the Points Objects
+     * Adds the Point 't' which doesn't have to get initialized manually
      *
      * @param points Arraylist of the Points in the Diagram
      * @return Returns all the Edges in a EdgeList
      */
     public static ArrayList<Edge> pointToEdges(ArrayList<DPoint> points) {
         ArrayList<Edge> edges = new ArrayList<Edge>();
+        points.add(new DPoint('t'));
         for (DPoint dpoint : points) {
             if (dpoint.getConnections() != null) {
                 for (String connection : dpoint.getConnections()) {
