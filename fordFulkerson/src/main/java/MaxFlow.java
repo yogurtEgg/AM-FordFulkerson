@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,59 +18,40 @@ public class MaxFlow {
      * Initialises the Reverse Value of the Connection between S -> A
      */
     public static int sRev = 0;
-    private InputController controller;
 
 
-    public MaxFlow(InputController controller) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
-        edges.addAll(controller.getEdges());
-        this.controller = controller;
+    public MaxFlow(ArrayList<Edge> edges) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
+        MaxFlow.edges.addAll(edges);
+        start();
     }
 
     public void start() throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
-
         checkPrintEdges(edges);
         printMaxFlow(maxFlow(edges));
     }
 
-    /**
-     * Adds all the points to the ArrayList points
-     */
     /*
-    public static void initData(ArrayList<Edge> givenEdges) {
-        edges.addAll(givenEdges);
-
-        //Diagram 1: MaxFlow = 14
-        points.add(new DPoint('s', new ArrayList<String>(Arrays.asList("a5", "c10"))));
-        points.add(new DPoint('a', new ArrayList<String>(Arrays.asList("b4", "d5"))));
-        points.add(new DPoint('b', new ArrayList<String>(Arrays.asList("d6", "t4"))));
-        points.add(new DPoint('c', new ArrayList<String>(Arrays.asList("a6", "d5"))));
-        points.add(new DPoint('d', new ArrayList<String>(Collections.singletonList("t12"))));
-        points.add(new DPoint('t'));
-    }
-     */
-
-    /**
      * Initializes all the Edges from the Information given in the Points Objects
      *
      * @param points Arraylist of the Points in the Diagram
      * @return Returns all the Edges in a EdgeList
-     */
-//    public static ArrayList<Edge> pointToEdges(ArrayList<DPoint> points) {
-//        ArrayList<Edge> edges = new ArrayList<Edge>();
-//        for (DPoint dpoint : points) {
-//            if (dpoint.getConnections() != null) {
-//                for (String connection : dpoint.getConnections()) {
-//                    if (isInteger(connection.substring(1))) {
-//                        Edge edge = new Edge(Integer.parseInt(connection.substring(1)), dpoint.getName(), connection.charAt(0));
-//                        edges.add(edge);
-//                    }
-//                }
-//            }
-//
-//        }
-//        checkPrintEdges(edges);
-//        return edges;
-//    }
+    public static ArrayList<Edge> pointToEdges(ArrayList<DPoint> points) {
+        ArrayList<Edge> edges = new ArrayList<Edge>();
+        for (DPoint dpoint : points) {
+            if (dpoint.getConnections() != null) {
+                for (String connection : dpoint.getConnections()) {
+                    if (isInteger(connection.substring(1))) {
+                      // Edge edge = new Edge(Integer.parseInt(connection.substring(1)), connection.charAt(0));
+                      //  edges.add(edge);
+                    }
+                }
+            }
+
+        }
+        checkPrintEdges(edges);
+        return edges;
+    }
+    */
 
     /**
      * Repeats the process in a while until there's no more way to be found
@@ -81,7 +61,7 @@ public class MaxFlow {
      * @throws ImpossibleOrderException When the sPoint(SourcePoint) is t(TargetPoint)
      */
     public static int maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
-        ArrayList<Edge> tempEdgeList = new ArrayList<Edge>();
+        ArrayList<Edge> tempEdgeList = new ArrayList<>();
         ArrayList<Edge> newEdgeList;
 
         while (true) {
@@ -93,7 +73,7 @@ public class MaxFlow {
                 newEdgeList = getMaxFlow(curWay);
                 for (Edge newEdge : newEdgeList) {
                     for (Edge edge : edges) {
-                        if (newEdge.getsPoint() == edge.getsPoint() && newEdge.gettPoint() == edge.gettPoint()) {
+                        if (newEdge.getStartPoint().getId() == edge.getStartPoint().getId() && newEdge.getEndPoint().getId() == edge.getEndPoint().getId()) {
                             edge.setValue(edge.getValue() + newEdge.getValue());
                         } else {
                             tempEdgeList.add(newEdge);
@@ -129,7 +109,7 @@ public class MaxFlow {
      * @throws ImpossibleOrderException When the sPoint(SourcePoint) is t(TargetPoint)
      */
     public static ArrayList<Edge> reduceFlow(int bottleNeck, List<Edge> edgeFlow) throws ImpossibleOrderException {
-        ArrayList<Edge> newEdgeList = new ArrayList<Edge>();
+        ArrayList<Edge> newEdgeList = new ArrayList<>();
         for (Edge edge : edgeFlow) {
             try {
                 Edge revEdge = sPointCheck(edge, bottleNeck);
@@ -156,18 +136,18 @@ public class MaxFlow {
      */
     public static Edge sPointCheck(Edge curEdge, int bottleNeck) throws ImpossibleOrderException {
         Edge edge = null;
-        char sPoint = curEdge.getsPoint();
-        char tPoint = curEdge.gettPoint();
+        int sPoint = curEdge.getStartPoint().getId();
+        int tPoint = curEdge.getEndPoint().getId();
         switch (sPoint) {
-            case 't':
+            case 1:
                 throw new ImpossibleOrderException("The Point t as starting point isn't valid");
-            case 's':
+            case 0:
                 addSRev(bottleNeck);
                 reduceValue(curEdge, bottleNeck);
                 break;
             default:
-                if (tPoint != 't') {
-                    edge = new Edge(bottleNeck, tPoint, sPoint);
+                if (tPoint != 1) {
+                    edge = new Edge(curEdge.getEndPoint(), curEdge.getStartPoint(), bottleNeck);
                 }
                 reduceValue(curEdge, bottleNeck);
                 break;
@@ -218,9 +198,9 @@ public class MaxFlow {
      * @return a possible Way to flow
      */
     public static ArrayList<Edge> deepSearch(ArrayList<Edge> edges) {
-        char curSourceChar = 's';
-        ArrayList<Edge> curWay = new ArrayList<Edge>();
-        return deepSearchRec(edges, curWay, curSourceChar);
+        int curSourceInt = 0;
+        ArrayList<Edge> curWay = new ArrayList<>();
+        return deepSearchRec(edges, curWay, curSourceInt);
     }
 
     /**
@@ -231,23 +211,23 @@ public class MaxFlow {
      * @param curSourceChar The Source point from where it should continue or start the search
      * @return a possible Way to flow
      */
-    public static ArrayList<Edge> deepSearchRec(ArrayList<Edge> edges, ArrayList<Edge> curWay, char curSourceChar) {
+    public static ArrayList<Edge> deepSearchRec(ArrayList<Edge> edges, ArrayList<Edge> curWay, int curSourceChar) {
         //Boolean to check if the Recursion isn't circling itself
         for (Edge edge : edges) {
             //Checks if the sourcePoint matches the given sourceChar and if it's greater than 0
-            if (edge.getsPoint() == curSourceChar && edge.getValue() > 0) {
+            if (edge.getStartPoint().getId() == curSourceChar && edge.getValue() > 0) {
                 //Circle Check
                 if (curWay.isEmpty() || noCircle(edge, curWay, 0)) {
                     //Adds it to the current way
                     curWay.add(edge);
-                    if (edge.gettPoint() == 't') {
+                    if (edge.getEndPoint().getId() == '1') {
                         //The Recursion has reached it's end
                         return curWay;
                     } else {
-                        curWay = deepSearchRec(edges, curWay, edge.gettPoint());
+                        curWay = deepSearchRec(edges, curWay, edge.getEndPoint().getId());
                         //Checks if the Recursion has already reached it's end and if it has passes the return value
                         Edge checkEdge = curWay.get(curWay.size() - 1);
-                        if (checkEdge.gettPoint() == 't') {
+                        if (checkEdge.getEndPoint().getId() == 1) {
                             return curWay;
                         }
                         //Otherwise it removes the last Edge abd goes on with searching
@@ -268,7 +248,7 @@ public class MaxFlow {
      * @return true if there's no circle, false if there is
      */
     public static boolean noCircle(Edge curEdge, ArrayList<Edge> curWay, int index) {
-        if (curEdge.gettPoint() == curWay.get(index).getsPoint()) {
+        if (curEdge.getEndPoint().getId() == curWay.get(index).getStartPoint().getId()) {
             return false;
         } else {
             index++;
@@ -288,9 +268,9 @@ public class MaxFlow {
         for (Edge edge : curWay) {
             String tempString = "--";
             if (edge.getValue() > 9) tempString = "-";
-            System.out.print("(" + Character.toUpperCase(edge.getsPoint()) + ") " + tempString + edge.getValue() + "-> ");
+            System.out.print("(" + edge.getStartPoint().getId() + ") " + tempString + edge.getValue() + "-> ");
             if(edge  == curWay.get(curWay.size() - 1)){
-                System.out.print("(T)");
+                System.out.print("(1)");
             }
         }
         System.out.print("\n");
@@ -305,24 +285,6 @@ public class MaxFlow {
         for (Edge edge : edges) {
             System.out.println(edge.getStartPoint().getId() + " -" + edge.getValue() + "-> " + edge.getEndPoint().getId());
         }
-    }
-
-    /**
-     * Checks if a String has a Integer value
-     *
-     * @param s The String that has to be tested
-     * @return if the given String is a Integer
-     */
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        } catch (NullPointerException e) {
-            return false;
-        }
-        // only got here if we didn't return false
-        return true;
     }
 
     /**

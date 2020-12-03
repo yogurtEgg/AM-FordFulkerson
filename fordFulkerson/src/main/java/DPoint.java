@@ -9,7 +9,6 @@ public class DPoint {
     private double posX;
     private double posY;
     private double radius;
-    private ArrayList<String> connections;
 
     public DPoint(double posX, double posY, int id) {
         this.posX = posX;
@@ -20,18 +19,6 @@ public class DPoint {
 
     public DPoint(){
 
-    }
-
-    public ArrayList<String> getConnections() {
-        return connections;
-    }
-
-    public void setConnections(ArrayList<String> connections) {
-        this.connections = connections;
-    }
-
-    public void addConnection(String connection){
-        this.connections.add(connection);
     }
 
     public double getPosX() {
