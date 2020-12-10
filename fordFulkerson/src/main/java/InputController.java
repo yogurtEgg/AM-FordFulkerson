@@ -88,6 +88,7 @@ public class InputController extends Application {
 
     private void clearCanvas(){
         knots.clear();
+        edges.clear();
 
         lineGc.clearRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
         knotGc.clearRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
@@ -286,13 +287,12 @@ public class InputController extends Application {
 
         //checks if the current location is good for drawing a circle
         if (checkClick(mouseX, mouseY) && !dragging) {
-
+            id += 1;
             knotGc.setFill(Color.DARKBLUE);
             knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
             currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
             knots.add(currentPoint);
             System.out.println(mouseX + "\t" + mouseY);
-            id += 1;
         }
 
         //if there is a circle, the currentpoint gets updated
@@ -356,26 +356,18 @@ public class InputController extends Application {
      * @throws ImpossibleBottleNeckValueException
      */
     public void handleButtonStart(ActionEvent event){
+        //TODO: Wenn Start gedrückt -> keine Veränderung mehr
+        //TODO: Nicht sich selbst verbinden
+        //TODO:
         System.out.println("Person Button pressed");
 
         try {
-            MaxFlow mf = new MaxFlow(this);
+            MaxFlow mf = new MaxFlow(edges, new VisualisationController());
         } catch (ImpossibleBottleNeckValueException e) {
             System.out.println(e.getMessage());
         } catch (ImpossibleOrderException m){
             System.out.println(m.getMessage());
-        }
-
-        //src: https://stackoverflow.com/questions/27160951/javafx-open-another-fxml-in-the-another-window-with-button
-        Parent root;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/visualisation.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Result Visualisation");
-            stage.setScene(new Scene(root, 450, 450));
-            stage.show();
-            System.out.println("Result Visualisation open");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
