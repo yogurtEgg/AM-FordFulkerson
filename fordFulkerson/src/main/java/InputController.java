@@ -1,7 +1,5 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,10 +12,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.lang.System.*;
 
 public class InputController extends Application {
 
@@ -146,7 +145,7 @@ public class InputController extends Application {
 
         DPoint endPoint = isThereCircle(mouseX, mouseY);
 
-        System.out.println("Mouse Released");
+        out.println("Mouse Released");
         if (dragging && !(endPoint == null)) {
 
             //arow part
@@ -191,26 +190,26 @@ public class InputController extends Application {
 
             //checks if the arrow points at the source point
             if(currentPoint.getPosX() == target.getPosX() && currentPoint.getPosY() == target.getPosY()){
-                System.out.println("ERROR: arrow from target point");
+                out.println("ERROR: arrow from target point");
 
                 wrongArrow.setContentText("You cannot draw an arrow from the target point!");
                 wrongArrow.showAndWait();
             //Checks if the arrow starts at the target point
             } else if (endPoint.getPosX() == source.getPosX() && endPoint.getPosY() == source.getPosY()) {
-                System.out.println("ERROR: arrow to source point");
+                out.println("ERROR: arrow to source point");
 
                 wrongArrow.setContentText("You cannot point an arrow at the source point!");
                 wrongArrow.showAndWait();
 
             } else {
-                int choice = 0;
+                int choice;
                 Optional<String> result = dialog.showAndWait();
                 if (result.isPresent()){
                     choice = Integer.parseInt(result.get());
-                    System.out.println("Your choice: " + choice);
+                    out.println("Your choice: " + choice);
 
 
-                    System.out.println(choice);
+                    out.println(choice);
 
                     double textXPos = currentPoint.getPosX() + endPoint.getPosX();
                     textXPos = textXPos / 2;
@@ -226,7 +225,7 @@ public class InputController extends Application {
                     lineGc.strokeLine(arrow1.getStartX(), arrow1.getStartY(), arrow1.getEndX(), arrow1.getEndY());
                     lineGc.strokeLine(arrow2.getStartX(), arrow2.getStartY(), arrow2.getEndX(), arrow2.getEndY());
 
-                    System.out.print("Pfeil gezeichnet");
+                    out.print("Pfeil gezeichnet");
 
                     edges.add(new Edge(currentPoint, endPoint, choice));
                 } else {
@@ -250,7 +249,7 @@ public class InputController extends Application {
      * @param mouseEvent Detects the mouse
      */
     private void mouseDragAction(MouseEvent mouseEvent) {
-        System.out.println("Mouse Dragged");
+        out.println("Mouse Dragged");
 
         if (currentPointIsCircle) {
             dragging = true;
@@ -266,7 +265,7 @@ public class InputController extends Application {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
-        System.out.println("Mouse Pressed");
+        out.println("Mouse Pressed");
 
         if (isThereCircle(mouseX, mouseY) != null) {
             currentPoint = isThereCircle(mouseX, mouseY);
@@ -283,7 +282,7 @@ public class InputController extends Application {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
-        System.out.println("Mouse Clicked");
+        out.println("Mouse Clicked");
 
         //checks if the current location is good for drawing a circle
         if (checkClick(mouseX, mouseY) && !dragging) {
@@ -292,7 +291,7 @@ public class InputController extends Application {
             knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
             currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
             knots.add(currentPoint);
-            System.out.println(mouseX + "\t" + mouseY);
+            out.println(mouseX + "\t" + mouseY);
         }
 
         //if there is a circle, the currentpoint gets updated
@@ -349,24 +348,16 @@ public class InputController extends Application {
         return knots.size() <= 10;
     }
 
-    /**
-     *
-     * @param event
-     * @throws ImpossibleOrderException
-     * @throws ImpossibleBottleNeckValueException
-     */
     public void handleButtonStart(ActionEvent event){
         //TODO: Wenn Start gedrückt -> keine Veränderung mehr
         //TODO: Nicht sich selbst verbinden
         //TODO:
-        System.out.println("Person Button pressed");
+        out.println("Person Button pressed");
 
         try {
             MaxFlow mf = new MaxFlow(edges, new VisualisationController());
-        } catch (ImpossibleBottleNeckValueException e) {
-            System.out.println(e.getMessage());
-        } catch (ImpossibleOrderException m){
-            System.out.println(m.getMessage());
+        } catch (ImpossibleBottleNeckValueException | ImpossibleOrderException e) {
+            out.println(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -374,10 +365,6 @@ public class InputController extends Application {
 
     public void handleButtonClear(ActionEvent actionEvent) {
         startUp();
-    }
-
-    public ArrayList<Edge> getEdges(){
-        return edges;
     }
 
     public static void main(String[] args) {
