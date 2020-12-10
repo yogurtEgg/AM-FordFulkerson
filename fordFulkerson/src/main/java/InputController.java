@@ -32,6 +32,7 @@ public class InputController extends Application {
     private int id;
     private boolean dragging = false;
     private boolean currentPointIsCircle = false;
+    private boolean startPressed;
     private DPoint currentPoint;
     private DPoint source;
     private DPoint target;
@@ -85,9 +86,11 @@ public class InputController extends Application {
         startUp();
     }
 
-    private void clearCanvas(){
+    private void clearCanvas() {
         knots.clear();
         edges.clear();
+
+        startPressed = false;
 
         lineGc.clearRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
         knotGc.clearRect(0, 0, lineCanvas.getWidth(), lineCanvas.getHeight());
@@ -105,6 +108,8 @@ public class InputController extends Application {
      * StartUp
      */
     private void startUp() {
+
+
         wrongArrow = new Alert(Alert.AlertType.ERROR);
         wrongArrow.setTitle("Error Dialog");
         wrongArrow.setHeaderText("Impossible Arrow");
@@ -143,10 +148,10 @@ public class InputController extends Application {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
-        DPoint endPoint = isThereCircle(mouseX, mouseY);
+        DPoint endPoint = returnCurrentCircle(mouseX, mouseY);
 
         out.println("Mouse Released");
-        if (dragging && !(endPoint == null)) {
+        if (dragging && !(endPoint == null) && !startPressed) {
 
             //arow part
             double ex = endPoint.getPosX() + 10;
@@ -189,22 +194,32 @@ public class InputController extends Application {
 
 
             //checks if the arrow points at the source point
-            if(currentPoint.getPosX() == target.getPosX() && currentPoint.getPosY() == target.getPosY()){
+            if (currentPoint.getPosX() == target.getPosX() && currentPoint.getPosY() == target.getPosY()) {
                 out.println("ERROR: arrow from target point");
 
                 wrongArrow.setContentText("You cannot draw an arrow from the target point!");
                 wrongArrow.showAndWait();
-            //Checks if the arrow starts at the target point
+                //Checks if the arrow starts at the target point
             } else if (endPoint.getPosX() == source.getPosX() && endPoint.getPosY() == source.getPosY()) {
                 out.println("ERROR: arrow to source point");
 
                 wrongArrow.setContentText("You cannot point an arrow at the source point!");
                 wrongArrow.showAndWait();
 
+            } else if (sameCircle(currentPoint, endPoint)) {
+                out.println("ERROR: arrow to same circle");
+
+                wrongArrow.setContentText("You cannot have the endpoint be the same as the startpoint!");
+                wrongArrow.showAndWait();
             } else {
                 int choice;
                 Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()){
+                if (thereIsEdge(new Edge(currentPoint, endPoint))) {
+                    out.println("ERROR: arrow already exists");
+
+                    wrongArrow.setContentText("You cannot draw an arrow that already exists!");
+                    wrongArrow.showAndWait();
+                } else if (result.isPresent()) {
                     choice = Integer.parseInt(result.get());
                     out.println("Your choice: " + choice);
 
@@ -232,7 +247,6 @@ public class InputController extends Application {
                     wrongArrow.setContentText("You have to enter a number value to draw an arrow!");
                     wrongArrow.showAndWait();
                 }
-
 
 
             }
@@ -265,10 +279,11 @@ public class InputController extends Application {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
+
         out.println("Mouse Pressed");
 
-        if (isThereCircle(mouseX, mouseY) != null) {
-            currentPoint = isThereCircle(mouseX, mouseY);
+        if (sameCircle(currentPoint, new DPoint(mouseX, mouseY))) {
+            currentPoint = returnCurrentCircle(mouseX, mouseY);
             currentPointIsCircle = true;
         }
     }
@@ -283,22 +298,23 @@ public class InputController extends Application {
         double mouseY = mouseEvent.getY();
 
         out.println("Mouse Clicked");
+        if (!startPressed) {
+            //checks if the current location is good for drawing a circle
+            if (checkClick(mouseX, mouseY) && !dragging) {
+                id += 1;
+                knotGc.setFill(Color.DARKBLUE);
+                knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
+                currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
+                knots.add(currentPoint);
+                out.println(mouseX + "\t" + mouseY);
+            }
 
-        //checks if the current location is good for drawing a circle
-        if (checkClick(mouseX, mouseY) && !dragging) {
-            id += 1;
-            knotGc.setFill(Color.DARKBLUE);
-            knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
-            currentPoint = new DPoint(mouseX - 10, mouseY - 10, id);
-            knots.add(currentPoint);
-            out.println(mouseX + "\t" + mouseY);
-        }
-
-        //if there is a circle, the currentpoint gets updated
-        if (isThereCircle(mouseX, mouseY) != null) {
-            for (DPoint dp : knots) {
-                if (dp.getPosX() == mouseX && dp.getPosY() == mouseY) {
-                    currentPoint = dp;
+            //if there is a circle, the currentpoint gets updated
+            if (sameCircle(new DPoint(mouseX, mouseY), currentPoint)) {
+                for (DPoint dp : knots) {
+                    if (dp.getPosX() == mouseX && dp.getPosY() == mouseY) {
+                        currentPoint = dp;
+                    }
                 }
             }
         }
@@ -312,7 +328,7 @@ public class InputController extends Application {
      * @param mouseY Pos Y of mouse
      * @return returns a DPoint if one is at the position clicked
      */
-    private DPoint isThereCircle(double mouseX, double mouseY) {
+    private DPoint returnCurrentCircle(double mouseX, double mouseY) {
         for (DPoint dp : knots) {
             double width = dp.getRadius() * 2;
             if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width / 2))
@@ -321,6 +337,25 @@ public class InputController extends Application {
                 }
         }
         return null;
+    }
+
+    private boolean sameCircle(DPoint start, DPoint end) {
+        double width = 17;
+        if (start.getPosY() < (end.getPosY() + width) && start.getPosY() > (end.getPosY() - width / 2))
+            return start.getPosX() < (end.getPosX() + width) && start.getPosX() > (end.getPosX() - width / 2);
+        return false;
+    }
+
+    private boolean thereIsEdge(Edge e) {
+        for (Edge d : edges) {
+            if (sameCircle(e.getStartPoint(), d.getStartPoint()) && sameCircle(e.getEndPoint(), d.getEndPoint())) {
+                return true;
+            } else if (sameCircle(e.getStartPoint(), d.getEndPoint()) && sameCircle(e.getEndPoint(), d.getStartPoint())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -341,26 +376,28 @@ public class InputController extends Application {
             return false;
         }
 
-        if (isThereCircle(mouseX, mouseY) != null) {
+        if (sameCircle(currentPoint, new DPoint(mouseX, mouseY))) {
             return false;
         }
 
         return knots.size() <= 10;
     }
 
-    public void handleButtonStart(ActionEvent event){
+    public void handleButtonStart(ActionEvent event) {
         //TODO: Wenn Start gedrückt -> keine Veränderung mehr
-        //TODO: Nicht sich selbst verbinden
         //TODO:
         out.println("Person Button pressed");
+        startPressed = true;
 
         try {
             MaxFlow mf = new MaxFlow(edges, new VisualisationController());
+            System.out.println(mf.getSolution());
         } catch (ImpossibleBottleNeckValueException | ImpossibleOrderException e) {
             out.println(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void handleButtonClear(ActionEvent actionEvent) {

@@ -268,17 +268,16 @@ public class MaxFlow {
      * @param curWay The current Way
      */
     public static void checkPrintWay(ArrayList<Edge> curWay) {
-        solution += "\n\nEdges:";
+
         for (Edge edge : curWay) {
-            solution += "\n";
             String tempString = "--";
             if (edge.getValue() > 9) tempString = "-";
-            solution += ("(" + edge.getStartPoint().getId() + ") " + tempString + edge.getValue() + "-> ");
-            if(edge  == curWay.get(curWay.size() - 1)){
-                solution += ("(1)");
+            System.out.print("(" + edge.getStartPoint().getId() + ") " + tempString + edge.getValue() + "-> ");
+            if(edge  == curWay.get(curWay.size() - 1)) {
+                System.out.print("(1)");
             }
-            System.out.println(solution);
         }
+        System.out.println("\n");
     }
 
     /**
@@ -300,7 +299,15 @@ public class MaxFlow {
         controller.outputSolution(solution + "\nMaxflow:" + maxFlow);
     }
 
-//    public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
+    public static String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        MaxFlow.solution = solution;
+    }
+
+    //    public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
 //        initData();
 //        printMaxFlow(maxFlow(pointToEdges(points)));
 //    }y

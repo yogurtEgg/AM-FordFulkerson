@@ -21,6 +21,11 @@ public class DPoint {
 
     }
 
+    public DPoint(double mouseX, double mouseY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
     public double getPosX() {
         return posX;
     }

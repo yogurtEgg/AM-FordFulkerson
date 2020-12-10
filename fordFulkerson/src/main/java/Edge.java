@@ -14,6 +14,11 @@ public class Edge {
         this.value = value;
     }
 
+    public Edge(DPoint currentPoint, DPoint endPoint) {
+        this.endPoint = endPoint;
+        this.startPoint = startPoint;
+    }
+
     public DPoint getStartPoint() {
         return startPoint;
     }
