@@ -18,9 +18,10 @@ public class Edge {
         this.name = Character.toString(sPoint) + Character.toString(tPoint);
     }
 
-    public Edge(DPoint currentPoint, DPoint endPoint) {
+    public Edge(DPoint currentPoint, DPoint endPoint, int value) {
         this.endPoint = endPoint;
         this.startPoint = startPoint;
+        this.value = value;
     }
 
     public void setName(String name) {
