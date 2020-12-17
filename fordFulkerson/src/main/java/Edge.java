@@ -14,7 +14,7 @@ public class Edge {
         this.value = value;
     }
 
-    public Edge(DPoint currentPoint, DPoint endPoint) {
+    public Edge(DPoint startPoint, DPoint endPoint) {
         this.endPoint = endPoint;
         this.startPoint = startPoint;
     }

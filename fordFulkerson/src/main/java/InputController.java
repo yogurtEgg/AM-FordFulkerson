@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.System.*;
+import static java.lang.System.out;
 
 public class InputController extends Application {
 
@@ -148,7 +148,7 @@ public class InputController extends Application {
         double mouseX = mouseEvent.getX();
         double mouseY = mouseEvent.getY();
 
-        DPoint endPoint = returnCurrentCircle(mouseX, mouseY);
+        DPoint endPoint = getCurrentCircle(mouseX, mouseY);
 
         out.println("Mouse Released");
         if (dragging && !(endPoint == null) && !startPressed) {
@@ -282,8 +282,8 @@ public class InputController extends Application {
 
         out.println("Mouse Pressed");
 
-        if (sameCircle(currentPoint, new DPoint(mouseX, mouseY))) {
-            currentPoint = returnCurrentCircle(mouseX, mouseY);
+        if (circleExists(new DPoint(mouseX, mouseY))) {
+            currentPoint = getCurrentCircle(mouseX, mouseY);
             currentPointIsCircle = true;
         }
     }
@@ -299,8 +299,13 @@ public class InputController extends Application {
 
         out.println("Mouse Clicked");
         if (!startPressed) {
-            //checks if the current location is good for drawing a circle
-            if (checkClick(mouseX, mouseY) && !dragging) {
+            if (circleExists(new DPoint(mouseX, mouseY))) {
+                for (DPoint dp : knots) {
+                    if (dp.getPosX() == mouseX && dp.getPosY() == mouseY) {
+                        currentPoint = dp;
+                    }
+                }
+            } else             /*checks if the current location is good for drawing a circle*/ if (checkClick(mouseX, mouseY) && !dragging) {
                 id += 1;
                 knotGc.setFill(Color.DARKBLUE);
                 knotGc.fillOval(mouseX - 10, mouseY - 10, 20, 20);
@@ -308,15 +313,8 @@ public class InputController extends Application {
                 knots.add(currentPoint);
                 out.println(mouseX + "\t" + mouseY);
             }
+            /* if there is a circle, the currentpoint gets updated */
 
-            //if there is a circle, the currentpoint gets updated
-            if (sameCircle(new DPoint(mouseX, mouseY), currentPoint)) {
-                for (DPoint dp : knots) {
-                    if (dp.getPosX() == mouseX && dp.getPosY() == mouseY) {
-                        currentPoint = dp;
-                    }
-                }
-            }
         }
     }
 
@@ -328,7 +326,7 @@ public class InputController extends Application {
      * @param mouseY Pos Y of mouse
      * @return returns a DPoint if one is at the position clicked
      */
-    private DPoint returnCurrentCircle(double mouseX, double mouseY) {
+    private DPoint getCurrentCircle(double mouseX, double mouseY) {
         for (DPoint dp : knots) {
             double width = dp.getRadius() * 2;
             if (mouseY < (dp.getPosY() + width) && mouseY > (dp.getPosY() - width / 2))
@@ -339,10 +337,18 @@ public class InputController extends Application {
         return null;
     }
 
-    private boolean sameCircle(DPoint start, DPoint end) {
+    private boolean circleExists(DPoint mouseClick) {
         double width = 17;
-        if (start.getPosY() < (end.getPosY() + width) && start.getPosY() > (end.getPosY() - width / 2))
-            return start.getPosX() < (end.getPosX() + width) && start.getPosX() > (end.getPosX() - width / 2);
+        for (DPoint dPoint : knots) {
+            if (sameCircle(mouseClick, dPoint)) return true;
+        }
+        return false;
+    }
+
+    private boolean sameCircle(DPoint mouseClick, DPoint dPoint) {
+        double width = 17;
+            if (mouseClick.getPosY() < (dPoint.getPosY() + width) && mouseClick.getPosY() > (dPoint.getPosY() - width))
+                return mouseClick.getPosX() < (dPoint.getPosX() + width) && mouseClick.getPosX() > (dPoint.getPosX() - width);
         return false;
     }
 
@@ -371,12 +377,12 @@ public class InputController extends Application {
             return false;
         }
 
-        //x-Border
+        //y-Border
         if (mouseY < 30 || mouseY > knotCanvas.getHeight() - 30) {
             return false;
         }
 
-        if (sameCircle(currentPoint, new DPoint(mouseX, mouseY))) {
+        if (circleExists(new DPoint(mouseX, mouseY))) {
             return false;
         }
 
