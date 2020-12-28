@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -9,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class VisualisationController{
@@ -30,15 +32,18 @@ public class VisualisationController{
         //primaryStage.setTitle("Settings");
         //TODO Connect FXML to rest of code
 Stage stage = new Stage();
-        GridPane pane = new GridPane();
-
-        Button closeButton = new Button("close");
-        closeButton.setOnAction(this::handleButtonClose);
-        pane.add(closeButton, 2, 2);
+        VBox pane = new VBox();
+        pane.setPadding(new Insets(10, 50, 50, 50));
+        pane.setSpacing(10);
 
         outputLabel = new Label();
         outputLabel.setWrapText(true);
-        pane.add(outputLabel, 1,1);
+        outputLabel.setText("");
+        pane.getChildren().add(outputLabel);
+
+        Button closeButton = new Button("close");
+        closeButton.setOnAction(this::handleButtonClose);
+        pane.getChildren().add(closeButton);
 
         Scene scene = new Scene(pane, 400, 500);
 

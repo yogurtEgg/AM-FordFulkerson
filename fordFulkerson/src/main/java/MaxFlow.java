@@ -22,6 +22,7 @@ public class MaxFlow {
      */
     public static int sRev = 0;
 
+<<<<<<< Updated upstream
     /**
      * Adds all the points to the ArrayList points
      */
@@ -59,12 +60,30 @@ public class MaxFlow {
         return edges;
     }
 
+=======
+    private final VisualisationController controller;
+    private static String solution;
+
+    public MaxFlow(ArrayList<Edge> edges, VisualisationController controller) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
+        this.controller = controller;
+        MaxFlow.edges.addAll(edges);
+        solution = "";
+        start();
+    }
+
+    public void start() throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
+        checkPrintEdges(edges);
+        printMaxFlow(maxFlow(edges));
+    }
+
+>>>>>>> Stashed changes
     /**
      * Repeats the process in a while until there's no more way to be found
+     *
      * @param edges The EdgeList with all the possible Edges to flow through
      * @return The maxFlow
      * @throws ImpossibleBottleNeckValueException Throws when the Bottleneck value is lower than 0
-     * @throws ImpossibleOrderException When the sPoint(SourcePoint) is t(TargetPoint)
+     * @throws ImpossibleOrderException           When the sPoint(SourcePoint) is t(TargetPoint)
      */
     public static int maxFlow(ArrayList<Edge> edges) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
         ArrayList<Edge> tempEdgeList = new ArrayList<Edge>();
@@ -184,7 +203,7 @@ public class MaxFlow {
      *
      * @param curWay The current Way
      * @return Returns the EdgeList which holds the RevEdges
-     * @throws ImpossibleOrderException  When the sPoint(SourcePoint) is t(TargetPoint)
+     * @throws ImpossibleOrderException           When the sPoint(SourcePoint) is t(TargetPoint)
      * @throws ImpossibleBottleNeckValueException Throws when the Bottleneck value isn't greater than 0
      */
     public static ArrayList<Edge> getMaxFlow(ArrayList<Edge> curWay) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
@@ -274,9 +293,15 @@ public class MaxFlow {
         for (Edge edge : curWay) {
             String tempString = "--";
             if (edge.getValue() > 9) tempString = "-";
+<<<<<<< Updated upstream
             System.out.print("(" + Character.toUpperCase(edge.getsPoint()) + ") " + tempString + edge.getValue() + "-> ");
             if(edge  == curWay.get(curWay.size() - 1)){
                 System.out.print("(T)");
+=======
+            System.out.print("(" + edge.getStartPoint().getId() + ") " + tempString + edge.getValue() + "-> ");
+            if (edge == curWay.get(curWay.size() - 1)) {
+                System.out.print("(1)");
+>>>>>>> Stashed changes
             }
         }
         System.out.print("\n");
@@ -288,6 +313,7 @@ public class MaxFlow {
      * @param edges The EdgeList with all the Edges which are given in the start
      */
     public static void checkPrintEdges(ArrayList<Edge> edges) {
+<<<<<<< Updated upstream
         for (Edge edge : edges) {
             System.out.println(edge.getsPoint() + " -" + edge.getValue() + "-> " + edge.gettPoint());
         }
@@ -324,3 +350,24 @@ public class MaxFlow {
         printMaxFlow(maxFlow(pointToEdges(points)));
     }
 }
+=======
+        solution += "Edges:";
+        for (Edge edge : edges)
+            solution = solution + ("\n" + edge.getStartPoint().getId() + " -" + edge.getValue() + "-> " + edge.getEndPoint().getId());
+    }
+
+    /**
+     * Prints out maximum flow
+     *
+     * @param maxFlow The maxFlow
+     */
+    public void printMaxFlow(int maxFlow) {
+        controller.outputSolution(solution + "\nMax flow:" + maxFlow);
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+}
+>>>>>>> Stashed changes
