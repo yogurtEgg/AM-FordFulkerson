@@ -19,11 +19,12 @@ public class MaxFlow {
      */
     public static int sRev = 0;
 
-    private VisualisationController controller;
+    private final VisualisationController controller;
     private static String solution;
 
     public MaxFlow(ArrayList<Edge> edges, VisualisationController controller) throws ImpossibleOrderException, ImpossibleBottleNeckValueException {
         this.controller = controller;
+        solution = "";
         MaxFlow.edges.addAll(edges);
         start();
     }
@@ -32,29 +33,6 @@ public class MaxFlow {
         checkPrintEdges(edges);
         printMaxFlow(maxFlow(edges));
     }
-
-    /*
-     * Initializes all the Edges from the Information given in the Points Objects
-     *
-     * @param points Arraylist of the Points in the Diagram
-     * @return Returns all the Edges in a EdgeList
-    public static ArrayList<Edge> pointToEdges(ArrayList<DPoint> points) {
-        ArrayList<Edge> edges = new ArrayList<Edge>();
-        for (DPoint dpoint : points) {
-            if (dpoint.getConnections() != null) {
-                for (String connection : dpoint.getConnections()) {
-                    if (isInteger(connection.substring(1))) {
-                      // Edge edge = new Edge(Integer.parseInt(connection.substring(1)), connection.charAt(0));
-                      //  edges.add(edge);
-                    }
-                }
-            }
-
-        }
-        checkPrintEdges(edges);
-        return edges;
-    }
-    */
 
     /**
      * Repeats the process in a while until there's no more way to be found
@@ -287,7 +265,7 @@ public class MaxFlow {
      */
     public static void checkPrintEdges(ArrayList<Edge> edges) {
         for (Edge edge : edges) {
-            solution += ("\n"+edge.getStartPoint().getId() + " -" + edge.getValue() + "-> " + edge.getEndPoint().getId());
+            System.out.println("\n"+edge.getStartPoint().getId() + " -" + edge.getValue() + "-> " + edge.getEndPoint().getId());
         }
     }
 
@@ -296,19 +274,11 @@ public class MaxFlow {
      * @param maxFlow The maxFlow
      */
     public void printMaxFlow(int maxFlow) {
-        controller.outputSolution(solution + "\nMaxflow:" + maxFlow);
+        controller.outputSolution(solution + "\nMax flow:" + maxFlow);
     }
 
     public static String getSolution() {
         return solution;
     }
 
-    public void setSolution(String solution) {
-        MaxFlow.solution = solution;
-    }
-
-    //    public static void main(String[] args) throws ImpossibleBottleNeckValueException, ImpossibleOrderException {
-//        initData();
-//        printMaxFlow(maxFlow(pointToEdges(points)));
-//    }y
 }
